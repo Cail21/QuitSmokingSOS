@@ -1,0 +1,25 @@
+# Usa l'immagine ufficiale di Python 3.11
+FROM python:3.11-slim
+
+# Installa le dipendenze di sistema per poppler e tesseract
+RUN apt-get update && apt-get install -y \
+    poppler-utils \
+    tesseract-ocr \
+ && rm -rf /var/lib/apt/lists/*
+
+# Imposta la directory di lavoro nel container
+WORKDIR /app
+
+# Copia tutti i file del progetto nella directory di lavoro
+COPY . /app
+
+# Installa le dipendenze Python
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt && \
+    pip install --upgrade langchain
+
+# Espone la porta usata dall'applicazione (modifica se necessario)
+EXPOSE 8501
+
+# Comando per avviare l'applicazione (modifica in base al tuo script)
+CMD ["python", "./run.py", "--server.address=0.0.0.0"]
